@@ -72,7 +72,6 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
 #leaflet {
     height: 500px;
     z-index: 0;

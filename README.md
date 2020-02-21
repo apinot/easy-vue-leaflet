@@ -20,10 +20,13 @@ How to install easy-vue-leaflet ?
   
 First, you need to import this module in your vue project with npm :
 ```
-    npm install --save easy-vue-leaflet 
+    npm install --save easy-vue-leaflet leaflet
 ```  
-Then, go in your vue template and import the component in your Vue.js project.
-**Don't forget to set the whished start view in the options (View the [Options prop](#Options)).**
+Then, go in your vue template and import the component in your Vue.js project and import the easy-vue-leaflet component like the code below.  
+  
+**Don't forget to set the whished start view in the options (View the [Options prop](#Options)).**   
+**Don't forget to add the css import**  
+  
 ```
 <template>
     <div>
@@ -56,9 +59,13 @@ export default {
     }
 }
 </script>
+
+<style>
+    @import url('https://unpkg.com/leaflet@1.6.0/dist/leaflet.css');
+</style>
 ```  
 Now, you are ready to use it. Follow the [Usage section](#Usage) for more details.
-You don't need to import any CSS or any other JS file.  
+You don't need to import any other CSS or JS file.  
 
 ***Optional***  
 By default, the leaflet map have a this size : 

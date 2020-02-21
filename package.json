@@ -32,5 +32,13 @@
     "bugs": {
         "url": "https://github.com/apinot/easy-vue-leaflet/issues"
     },
-    "homepage": "https://github.com/apinot/easy-vue-leaflet#readme"
+    "homepage": "https://github.com/apinot/easy-vue-leaflet#readme",
+    "keywords": [
+        "vue",
+        "vuejs",
+        "leaflet",
+        "open street map",
+        "easy",
+        "osm"
+    ]
 }

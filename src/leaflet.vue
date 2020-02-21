@@ -33,10 +33,12 @@ export default {
     },
     methods: {
         onViewChange() {
+            const NW = `${this.map.getBounds().getNorthWest().lat},${this.map.getBounds().getNorthWest().lng}`;
+            const SE = `${this.map.getBounds().getSouthEast().lat},${this.map.getBounds().getSouthEast().lng}`;
             const res = {
                 view: {
-                    NW: this.map.getBounds().getNorthWest().toString().match(/\d+[.]?\d+/g).join(','),
-                    SE: this.map.getBounds().getSouthEast().toString().match(/\d+[.]?\d+/g).join(','),
+                    NW,
+                    SE,
                     zoom: this.map.getZoom(),
                 }
             };

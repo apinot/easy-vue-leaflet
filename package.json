@@ -1,6 +1,6 @@
 {
     "name": "easy-vue-leaflet",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "main": "dist/leaflet.umd.js",
     "module": "dist/leaflet.esm.js",
     "unpkg": "dist/leaflet.min.js",

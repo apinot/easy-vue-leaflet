@@ -23,10 +23,11 @@ First, you need to import this module in your vue project with npm :
     npm install --save easy-vue-leaflet 
 ```  
 Then, go in your vue template and import the component in your Vue.js project.
+**Don't forget to set the whished start view in the options (View the [Options prop](#Options)).**
 ```
 <template>
     <div>
-        <leaflet></leaflet>
+        <leaflet :options="options></leaflet>
     </div>
 </template>
 
@@ -40,6 +41,13 @@ export default {
     },
     data() {
         return  {
+            options : {
+                view : {
+                    lat: 48.5,
+                    lng: 0.5,
+                    zoom: 3,
+                }
+            }
             ...
         };
     },

@@ -23,5 +23,14 @@
     },
     "dependencies": {
         "leaflet": "^1.6.0"
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/apinot/easy-vue-leaflet.git"
+    },
+    "author": "apinot",
+    "bugs": {
+        "url": "https://github.com/apinot/easy-vue-leaflet/issues"
+    },
+    "homepage": "https://github.com/apinot/easy-vue-leaflet#readme"
 }

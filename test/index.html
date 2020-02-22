@@ -17,7 +17,12 @@
         :circles="circles"
         @ready="onReady"
         @mapclick="onMapClick"
-        @markerClick="onMarkerClick"
+        @markerclick="onMarkerClick"
+        @markerin="onMarkerIn"
+        @markerout="onMarkerOut"
+        @circleclick="onCircleClick"
+        @circlein="onCircleIn"
+        @circleout="onCircleOut"
         @viewchanged="zoom = $event.view.zoom"
     ></leaflet>
     <p>
@@ -73,6 +78,18 @@ var app = new Vue({
     onMarkerClick(event) {
         const index = this.markers.indexOf(event.marker);
         this.markers.splice(index, 1);
+    },
+    onMarkerIn(event) {
+        console.log('marker hover');
+    },
+    onMarkerOut(event) {
+        console.log('marker normal');
+    },
+    onCircleIn(event) {
+        console.log('circle hover');
+    },
+    onCircleOut(event){
+        console.log('circle normal');
     }
   }
 })

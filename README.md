@@ -13,8 +13,12 @@ A vue.js component for an easier usage of Leaflet
      - [Events](#Events)
          * [Ready](#ready)
          * [View Changed](#viewchanged)
-         * [Marker Click](#markerclick)
          * [Map Click](#mapclick)
+         * [Marker Click](#markerclick)
+         * [Marker In](#markerin)
+         * [Marker Out](#markerout)
+         * [Circle In](#circlein)
+         * [Circle Out](#circleout)
 
 ## Install
 How to install easy-vue-leaflet ?  
@@ -133,7 +137,7 @@ data() {
             {
                 ...,
                 position : {
-                    lat : ... // the latitude of the marker
+                    lat : ..., // the latitude of the marker
                     lng : ... // the longitude of the marker
                 },
                 ...
@@ -159,7 +163,7 @@ data() {
             {
                 ...,
                 position : {
-                    lat : ... // the latitude of the marker
+                    lat : ..., // the latitude of the marker
                     lng : ... // the longitude of the marker
                 },
                 radius: ... // the radius of the circle (in meters)
@@ -185,13 +189,25 @@ Result :
 ```
 {
     view : {
-        NW: "54.188155,17.841797" // the north west postion in lat,lng format
-        SE: "39.266284,13.579102" // the south east position in lat,lng format
+        NW: "54.188155,17.841797", // the north west postion in lat,lng format
+        SE: "39.266284,13.579102", // the south east position in lat,lng format
         zoom: 5 // the new zoom level
     }
 }
 ```
 
+#### mapclick
+`mapclick` event is fire when user click on the map, but not on a layer (like marker, etc ...).  
+This is usefull to give the posibility to set a new marker for example.
+This event return an object with a postion object, like this :
+```
+{
+    position: {
+        lat: 45.5, // the latitude of the click
+        lng: 6.8 // the longitude of the click
+    }
+}
+```
 #### markerclick : 
 `markerclick` event is fire when the user click on a marker.
 This event return the inital object with a marker field which contains the original object used to create the marker.  
@@ -203,7 +219,7 @@ data() {
             {
                 id: 1
                 position : {
-                    lat : 45 // the latitude of the marker
+                    lat : 45, // the latitude of the marker
                     lng : 5 // the longitude of the marker
                 },
                 color: black
@@ -211,7 +227,7 @@ data() {
             {
                 id: 2
                 position : {
-                    lat : 44 // the latitude of the marker
+                    lat : 44, // the latitude of the marker
                     lng : 6 // the longitude of the marker
                 },
                 color: white
@@ -226,23 +242,174 @@ If you click on the first marker, you will have the object :
     marker : {
         id: 1
         position : {
-            lat : 45
+            lat : 45,
             lng : 5
         },
         color: black
     },
 }
 ```
-
-#### mapclick
-`mapclick` event is fire when user click on the map, but not on a layer (like marker, etc ...).  
-This is usefull to give the posibility to set a new marker for example.
-This event return an object with a postion object, like this :
+#### markerin : 
+`markerin` event is fire when the mouse enter on a marker.
+This event return the inital object with a marker field which contains the original object used to create the marker.  
+For example, 
+```
+data() {
+    return  {
+        markers : [
+            {
+                id: 1
+                position : {
+                    lat : 45, // the latitude of the marker
+                    lng : 5 // the longitude of the marker
+                },
+                color: black
+            },
+            {
+                id: 2
+                position : {
+                    lat : 44, // the latitude of the marker
+                    lng : 6 // the longitude of the marker
+                },
+                color: white
+            },
+        ]
+    };
+}
+```
+If you hover the first marker, you will have the object : 
 ```
 {
-    position: {
-        lat: 45.5 // the latitude of the click
-        lng: 6.8 // the longitude of the click
-    }
+    marker : {
+        id: 1
+        position : {
+            lat : 45,
+            lng : 5
+        },
+        color: black
+    },
+}
+```
+#### markerout : 
+`markerout` event is fire when the mouse leave from a marker.
+This event return the inital object with a marker field which contains the original object used to create the marker.  
+For example, 
+```
+data() {
+    return  {
+        markers : [
+            {
+                id: 1
+                position : {
+                    lat : 45, // the latitude of the marker
+                    lng : 5 // the longitude of the marker
+                },
+                color: black
+            },
+            {
+                id: 2
+                position : {
+                    lat : 44, // the latitude of the marker
+                    lng : 6 // the longitude of the marker
+                },
+                color: white
+            },
+        ]
+    };
+}
+```
+If you put out your mouse of the first marker, you will have the object : 
+```
+{
+    marker : {
+        id: 1
+        position : {
+            lat : 45,
+            lng : 5
+        },
+        color: black
+    },
+}
+```
+#### circlein : 
+`circlein` event is fire when the mouse enter on a circle.
+This event return the inital object with a circle field which contains the original object used to create the circle.  
+For example, 
+```
+data() {
+    return  {
+        circles : [
+            {
+                id: 1
+                position : {
+                    lat : 45, // the latitude of the circle
+                    lng : 5 // the longitude of the circle
+                },
+                radius: 10000 // the radius of the circle
+            },
+            {
+                id: 2
+                position : {
+                    lat : 44, // the latitude of the circle
+                    lng : 6 // the longitude of the circle
+                },
+                radius: 15000 // the radius of the circle
+            },
+        ]
+    };
+}
+```
+If you hover the first circle, you will have the object : 
+```
+{
+    circle : {
+        id: 1
+        position : {
+            lat : 45,
+            lng : 5
+        },
+        radius: 10000 // the radius of the circle
+    },
+}
+```
+#### circleout : 
+`circleout` event is fire when the mouse leave from a circle.
+This event return the inital object with a circle field which contains the original object used to create the circle.  
+For example, 
+```
+data() {
+    return  {
+        circles : [
+            {
+                id: 1
+                position : {
+                    lat : 45, // the latitude of the circle
+                    lng : 5 // the longitude of the circle
+                },
+                radius: 10000 // the radius of the circle
+            },
+            {
+                id: 2
+                position : {
+                    lat : 44, // the latitude of the circle
+                    lng : 6 // the longitude of the circle
+                },
+                radius: 15000 // the radius of the circle
+            },
+        ]
+    };
+}
+```
+If you put out your mouse of the first circle, you will have the object : 
+```
+{
+    circle : {
+        id: 1
+        position : {
+            lat : 45,
+            lng : 5
+        },
+        radius: 10000
+    },
 }
 ```

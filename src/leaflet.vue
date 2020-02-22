@@ -65,9 +65,21 @@ export default {
             if(!this.markers || !this.markers.length || this.markers.length <= 0) return;
             this.markers.forEach((marker) => {
                 const newMarker = L.marker([marker.position.lat, marker.position.lng]);
+                //click event
                 newMarker.on('click', () => {
                     this.$emit('markerclick', {marker});
                 });
+
+                // mouse enter event
+                newMarker.on('mouseover', () => {
+                    this.$emit('markerin', {marker});
+                });
+
+                //mouse leave event
+                newMarker.on('mouseout', () => {
+                    this.$emit('markerout', {marker});
+                });
+
                 this.markersLayer.addLayer(newMarker);
             });
         },
@@ -76,6 +88,21 @@ export default {
             if(!this.circles || !this.circles.length || this.circles.length <= 0) return;
             this.circles.forEach((circle) => {
                 const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});
+                //click event
+                newCircle.on('click', () => {
+                    this.$emit('circleclick', {circle});
+                });
+
+                // mouse enter event
+                newCircle.on('mouseover', () => {
+                    this.$emit('circlein', {circle});
+                });
+
+                //mouse leave event
+                newCircle.on('mouseout', () => {
+                    this.$emit('circleout', {circle});
+                });
+                
                 this.circlesLayer.addLayer(newCircle);
             });
         }

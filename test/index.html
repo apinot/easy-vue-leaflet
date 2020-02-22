@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test easy-vue-leaflet</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/easy-vue-leaflet@latest/dist/leaflet.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <leaflet 
+        :options="options"
+        :markers="markers"
+        @mapclick="onMapClick"
+        @markerClick="onMarkerClick"
+        @viewchanged="zoom = $event.view.zoom"
+    ></leaflet>
+    <p>
+        Zoom : {{zoom}}
+    </p>
+</div>
+<script type="module">
+
+var app = new Vue({
+  el: '#app',
+  data: {
+      options : {
+          view: {
+              lat: 45,
+              lng: 6,
+              zoom: 5,
+          }
+      },
+      markers: [],
+      zoom: 5,
+  },
+  methods: {
+    onMapClick(event) {
+        this.markers.push({
+            position: {
+                lat: event.position.lat,
+                lng: event.position.lng,
+            }
+        });
+    },
+    onMarkerClick(event) {
+        const index = this.markers.indexOf(event.marker);
+        this.markers.splice(index, 1);
+    }
+  }
+})
+</script>
+</body>
+</html>

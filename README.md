@@ -9,6 +9,7 @@ A vue.js component for an easier usage of Leaflet
      - [Props](#Props)
          * [Options](#Options)
          * [Markers](#Markers)
+         * [Circles](#Circles)
      - [Events](#Events)
          * [Ready](#ready)
          * [View Changed](#viewchanged)
@@ -144,6 +145,33 @@ data() {
 }
 ```
 The markers display is automatically refresh when markers array change.
+
+#### Circles : 
+`circles` is an array of circle object which contains :
+```
+<leaflet :circles="circles"></leaflet>
+
+...
+data() {
+    return  {
+        ...
+        circles : [
+            {
+                ...,
+                position : {
+                    lat : ... // the latitude of the marker
+                    lng : ... // the longitude of the marker
+                },
+                radius: ... // the radius of the circle (in meters)
+                ...
+            },
+            ...
+        ]
+        ...
+    };
+}
+```
+The circles display is automatically refresh when circles array change.
 
 ### Events
 

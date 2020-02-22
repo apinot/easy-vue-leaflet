@@ -7,13 +7,15 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/easy-vue-leaflet@latest/dist/leaflet.min.js"></script>
+    <script src="./leaflet.min.js"></script>
 </head>
 <body>
 <div id="app">
     <leaflet 
         :options="options"
         :markers="markers"
+        :circles="circles"
+        @ready="onReady"
         @mapclick="onMapClick"
         @markerClick="onMarkerClick"
         @viewchanged="zoom = $event.view.zoom"
@@ -36,8 +38,30 @@ var app = new Vue({
       },
       markers: [],
       zoom: 5,
+      circles: null,
   },
   methods: {
+    onReady() {
+        var that = this;
+        setTimeout(function() {
+            that.circles =  [
+                {
+                    position: {
+                        lat: 44,
+                        lng: 4,
+                    },
+                    radius: 100000, 
+                },
+                {
+                    position: {
+                        lat: 47,
+                        lng: 4,
+                    },
+                    radius: 200000, 
+                }
+            ]
+        }, 3000);
+    },
     onMapClick(event) {
         this.markers.push({
             position: {

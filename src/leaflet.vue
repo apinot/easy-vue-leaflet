@@ -6,11 +6,12 @@
 import L from 'leaflet';
 export default {
     name: 'leaflet',
-    props: ['options', 'markers'],
+    props: ['options', 'markers', 'circles'],
     data() {
         return {
             map: null,
             markersLayer: null,
+            circlesLayer: null,
         };
     },
     mounted() {
@@ -23,10 +24,16 @@ export default {
         this.map.on('zoomend', this.onViewChange);
         this.map.on('dragend', this.onViewChange);
         this.map.on('click', this.onMapClick);
+
+        //init circles
+        this.circlesLayer = L.layerGroup().addTo(this.map);
+        this.setCircles();
+
         // init markers
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
         this.markersLayer = L.layerGroup().addTo(this.map);
         this.setMarkers();
+
         // emit ready
         this.$emit('ready');
         this.onViewChange();
@@ -63,11 +70,22 @@ export default {
                 });
                 this.markersLayer.addLayer(newMarker);
             });
+        },
+        setCircles() {
+            this.circlesLayer.clearLayers();
+            if(!this.circles || !this.circles.length || this.circles.length <= 0) return;
+            this.circles.forEach((circle) => {
+                const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});
+                this.circlesLayer.addLayer(newCircle);
+            });
         }
     },
     watch: {
         markers() {
             this.setMarkers();
+        },
+        circles() {
+            this.setCircles();
         }
     }
 }

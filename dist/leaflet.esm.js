@@ -3,11 +3,12 @@ import L from 'leaflet';
 //
 var script = {
     name: 'leaflet',
-    props: ['options', 'markers'],
+    props: ['options', 'markers', 'circles'],
     data: function data() {
         return {
             map: null,
             markersLayer: null,
+            circlesLayer: null,
         };
     },
     mounted: function mounted() {
@@ -20,10 +21,16 @@ var script = {
         this.map.on('zoomend', this.onViewChange);
         this.map.on('dragend', this.onViewChange);
         this.map.on('click', this.onMapClick);
+
+        //init circles
+        this.circlesLayer = L.layerGroup().addTo(this.map);
+        this.setCircles();
+
         // init markers
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
         this.markersLayer = L.layerGroup().addTo(this.map);
         this.setMarkers();
+
         // emit ready
         this.$emit('ready');
         this.onViewChange();
@@ -62,11 +69,24 @@ var script = {
                 });
                 this$1.markersLayer.addLayer(newMarker);
             });
+        },
+        setCircles: function setCircles() {
+            var this$1 = this;
+
+            this.circlesLayer.clearLayers();
+            if(!this.circles || !this.circles.length || this.circles.length <= 0) { return; }
+            this.circles.forEach(function (circle) {
+                var newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});
+                this$1.circlesLayer.addLayer(newCircle);
+            });
         }
     },
     watch: {
         markers: function markers() {
             this.setMarkers();
+        },
+        circles: function circles() {
+            this.setCircles();
         }
     }
 };
@@ -215,11 +235,11 @@ __vue_render__._withStripped = true;
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-37af2e2c_0", { source: "\n#leaflet[data-v-37af2e2c] {\n    height: 500px;\n    z-index: 0;\n}\n", map: {"version":3,"sources":["/home/antoine/npm-packages/easy-vue-leaflet/src/leaflet.vue"],"names":[],"mappings":";AA4EA;IACA,aAAA;IACA,UAAA;AACA","file":"leaflet.vue","sourcesContent":["<template>\n    <div id=\"leaflet\"></div>\n</template>\n\n<script>\nimport L from 'leaflet';\nexport default {\n    name: 'leaflet',\n    props: ['options', 'markers'],\n    data() {\n        return {\n            map: null,\n            markersLayer: null,\n        };\n    },\n    mounted() {\n        // init map \n        this.map = L.map('leaflet').setView([this.options.view.lat, this.options.view.lng], this.options.view.zoom);\n         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {\n            attribution:\n                \"&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors\",\n        }).addTo(this.map);\n        this.map.on('zoomend', this.onViewChange);\n        this.map.on('dragend', this.onViewChange);\n        this.map.on('click', this.onMapClick);\n        // init markers\n        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';\n        this.markersLayer = L.layerGroup().addTo(this.map);\n        this.setMarkers();\n        // emit ready\n        this.$emit('ready');\n        this.onViewChange();\n    },\n    methods: {\n        onViewChange() {\n            const NW = `${this.map.getBounds().getNorthWest().lat},${this.map.getBounds().getNorthWest().lng}`;\n            const SE = `${this.map.getBounds().getSouthEast().lat},${this.map.getBounds().getSouthEast().lng}`;\n            const res = {\n                view: {\n                    NW,\n                    SE,\n                    zoom: this.map.getZoom(),\n                }\n            };\n            this.$emit('viewchanged', res);\n        },\n        onMapClick(event) {\n            const click = {\n                position : {\n                    lat: event.latlng.lat, \n                    lng: event.latlng.lng,\n                }\n            }\n            this.$emit('mapclick', click);\n        },\n        setMarkers() {\n            this.markersLayer.clearLayers();\n            if(!this.markers || !this.markers.length || this.markers.length <= 0) return;\n            this.markers.forEach((marker) => {\n                const newMarker = L.marker([marker.position.lat, marker.position.lng]);\n                newMarker.on('click', () => {\n                    this.$emit('markerclick', {marker});\n                });\n                this.markersLayer.addLayer(newMarker);\n            });\n        }\n    },\n    watch: {\n        markers() {\n            this.setMarkers();\n        }\n    }\n}\n</script>\n\n<style scoped>\n#leaflet {\n    height: 500px;\n    z-index: 0;\n}\n</style>"]}, media: undefined });
+    inject("data-v-33ef92a8_0", { source: "\n#leaflet[data-v-33ef92a8] {\n    height: 500px;\n    z-index: 0;\n}\n", map: {"version":3,"sources":["/home/antoine/npm-packages/easy-vue-leaflet/src/leaflet.vue"],"names":[],"mappings":";AA8FA;IACA,aAAA;IACA,UAAA;AACA","file":"leaflet.vue","sourcesContent":["<template>\n    <div id=\"leaflet\"></div>\n</template>\n\n<script>\nimport L from 'leaflet';\nexport default {\n    name: 'leaflet',\n    props: ['options', 'markers', 'circles'],\n    data() {\n        return {\n            map: null,\n            markersLayer: null,\n            circlesLayer: null,\n        };\n    },\n    mounted() {\n        // init map \n        this.map = L.map('leaflet').setView([this.options.view.lat, this.options.view.lng], this.options.view.zoom);\n         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {\n            attribution:\n                \"&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors\",\n        }).addTo(this.map);\n        this.map.on('zoomend', this.onViewChange);\n        this.map.on('dragend', this.onViewChange);\n        this.map.on('click', this.onMapClick);\n\n        //init circles\n        this.circlesLayer = L.layerGroup().addTo(this.map);\n        this.setCircles();\n\n        // init markers\n        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';\n        this.markersLayer = L.layerGroup().addTo(this.map);\n        this.setMarkers();\n\n        // emit ready\n        this.$emit('ready');\n        this.onViewChange();\n    },\n    methods: {\n        onViewChange() {\n            const NW = `${this.map.getBounds().getNorthWest().lat},${this.map.getBounds().getNorthWest().lng}`;\n            const SE = `${this.map.getBounds().getSouthEast().lat},${this.map.getBounds().getSouthEast().lng}`;\n            const res = {\n                view: {\n                    NW,\n                    SE,\n                    zoom: this.map.getZoom(),\n                }\n            };\n            this.$emit('viewchanged', res);\n        },\n        onMapClick(event) {\n            const click = {\n                position : {\n                    lat: event.latlng.lat, \n                    lng: event.latlng.lng,\n                }\n            }\n            this.$emit('mapclick', click);\n        },\n        setMarkers() {\n            this.markersLayer.clearLayers();\n            if(!this.markers || !this.markers.length || this.markers.length <= 0) return;\n            this.markers.forEach((marker) => {\n                const newMarker = L.marker([marker.position.lat, marker.position.lng]);\n                newMarker.on('click', () => {\n                    this.$emit('markerclick', {marker});\n                });\n                this.markersLayer.addLayer(newMarker);\n            });\n        },\n        setCircles() {\n            this.circlesLayer.clearLayers();\n            if(!this.circles || !this.circles.length || this.circles.length <= 0) return;\n            this.circles.forEach((circle) => {\n                const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});\n                this.circlesLayer.addLayer(newCircle);\n            });\n        }\n    },\n    watch: {\n        markers() {\n            this.setMarkers();\n        },\n        circles() {\n            this.setCircles();\n        }\n    }\n}\n</script>\n\n<style scoped>\n#leaflet {\n    height: 500px;\n    z-index: 0;\n}\n</style>"]}, media: undefined });
 
   };
   /* scoped */
-  var __vue_scope_id__ = "data-v-37af2e2c";
+  var __vue_scope_id__ = "data-v-33ef92a8";
   /* module identifier */
   var __vue_module_identifier__ = undefined;
   /* functional template */

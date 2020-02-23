@@ -108,11 +108,17 @@ export default {
         }
     },
     watch: {
-        markers() {
-            this.setMarkers();
+        markers: {
+            handler() {
+                this.setMarkers();
+            },
+            deep: true, 
         },
-        circles() {
-            this.setCircles();
+        circles: {
+            handler() {
+                this.setCircles();
+            },
+            deep: true,
         }
     }
 }

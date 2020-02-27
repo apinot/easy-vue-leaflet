@@ -13,6 +13,7 @@ export default {
             markersLayer: null,
             markersData: [],
             circlesLayer: null,
+            circlesData: [],
         };
     },
     mounted() {
@@ -28,7 +29,8 @@ export default {
 
         //init circles
         this.circlesLayer = L.layerGroup().addTo(this.map);
-        this.setCircles();
+        this.addCircles(this.compCircles);
+        
 
         // init markers
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
@@ -90,16 +92,26 @@ export default {
         removeMarkers(markers) {
             if(!markers || !markers.length || markers.length <= 0) return;
             markers.forEach((marker) => {
-                const {obj} = this.markersData.find(elem => elem.data === marker);
-                console.log(obj);
-                this.markersLayer.removeLayer(obj);
+                const data = this.markersData.find((elem, index) => {
+                    if(elem.data === marker){
+                        elem.index = index;
+                        return true;
+                    }
+                    return false;
+                });
+            
+                this.markersLayer.removeLayer(data.obj);
+                this.markersData.splice(data.index, 1);
             });
         },
-        setCircles() {
-            this.circlesLayer.clearLayers();
-            if(!this.circles || !this.circles.length || this.circles.length <= 0) return;
-            this.circles.forEach((circle) => {
+        addCircles(circles) {
+            if(!circles || !circles.length || circles.length <= 0) return;
+            circles.forEach((circle) => {
                 const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});
+                
+                // save trace in circleData
+                this.circlesData.push({data: circle, obj: newCircle});
+                
                 //click event
                 newCircle.on('click', () => {
                     this.$emit('circleclick', {circle});
@@ -117,7 +129,22 @@ export default {
                 
                 this.circlesLayer.addLayer(newCircle);
             });
-        }
+        },
+        removeCircles(circles) {
+            if(!circles || !circles.length || circles.length <= 0) return;
+            circles.forEach((circle) => {
+                const data = this.circlesData.find((elem, index) => {
+                    if(elem.data === circle){
+                        elem.index = index;
+                        return true;
+                    }
+                    return false;
+                });
+            
+                this.circlesLayer.removeLayer(data.obj);
+                this.circlesData.splice(data.index, 1);
+            });
+        },
     },
     computed: {
         compMarkers() {
@@ -142,16 +169,15 @@ export default {
             },
             deep: true, 
         },
-        circles: {
+        compCircles: {
             handler(newCircle, oldCircle) {
-                // if(!oldMarker) oldMarker = [];
-                // if(!newMarker) newMarker = [];
-                // const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
-                // const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));
-                // console.log(toRemove);
+                if(!oldCircle) oldCircle = [];
+                if(!newCircle) newCircle = [];
+                const toAdd = newCircle.filter(elem => !oldCircle.includes(elem));
+                const toRemove = oldCircle.filter(elem => !newCircle.includes(elem));
 
-                // this.addMarkers(toAdd);
-                // this.removeMarkers(toRemove);
+                this.addCircles(toAdd);
+                this.removeCircles(toRemove);
             },
             deep: true,
         }

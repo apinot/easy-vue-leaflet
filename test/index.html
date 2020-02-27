@@ -40,9 +40,9 @@ var app = new Vue({
               zoom: 5,
           }
       },
-      markers: null,
+      markers: [],
       zoom: 5,
-      circles: null,
+      circles: [],
   },
   methods: {
     onReady() {
@@ -63,7 +63,7 @@ var app = new Vue({
                     },
                     radius: 200000, 
                 }
-            ]
+            ];
         }, 3000);
     },
     onMapClick(event) {
@@ -85,9 +85,12 @@ var app = new Vue({
         console.log('marker normal');
     },
     onCircleIn(event) {
+        event.circle.radius += 20000;
         console.log('circle hover');
     },
     onCircleOut(event){
+        const index = this.circles.indexOf(event.circle);
+        this.circles.splice(index, 1);
         console.log('circle normal');
     }
   }

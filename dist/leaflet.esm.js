@@ -10,6 +10,7 @@ var script = {
             markersLayer: null,
             markersData: [],
             circlesLayer: null,
+            circlesData: [],
         };
     },
     mounted: function mounted() {
@@ -25,7 +26,8 @@ var script = {
 
         //init circles
         this.circlesLayer = L.layerGroup().addTo(this.map);
-        this.setCircles();
+        this.addCircles(this.compCircles);
+        
 
         // init markers
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
@@ -91,19 +93,28 @@ var script = {
 
             if(!markers || !markers.length || markers.length <= 0) { return; }
             markers.forEach(function (marker) {
-                var ref = this$1.markersData.find(function (elem) { return elem.data === marker; });
-                var obj = ref.obj;
-                console.log(obj);
-                this$1.markersLayer.removeLayer(obj);
+                var data = this$1.markersData.find(function (elem, index) {
+                    if(elem.data === marker){
+                        elem.index = index;
+                        return true;
+                    }
+                    return false;
+                });
+            
+                this$1.markersLayer.removeLayer(data.obj);
+                this$1.markersData.splice(data.index, 1);
             });
         },
-        setCircles: function setCircles() {
+        addCircles: function addCircles(circles) {
             var this$1 = this;
 
-            this.circlesLayer.clearLayers();
-            if(!this.circles || !this.circles.length || this.circles.length <= 0) { return; }
-            this.circles.forEach(function (circle) {
+            if(!circles || !circles.length || circles.length <= 0) { return; }
+            circles.forEach(function (circle) {
                 var newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});
+                
+                // save trace in circleData
+                this$1.circlesData.push({data: circle, obj: newCircle});
+                
                 //click event
                 newCircle.on('click', function () {
                     this$1.$emit('circleclick', {circle: circle});
@@ -121,7 +132,24 @@ var script = {
                 
                 this$1.circlesLayer.addLayer(newCircle);
             });
-        }
+        },
+        removeCircles: function removeCircles(circles) {
+            var this$1 = this;
+
+            if(!circles || !circles.length || circles.length <= 0) { return; }
+            circles.forEach(function (circle) {
+                var data = this$1.circlesData.find(function (elem, index) {
+                    if(elem.data === circle){
+                        elem.index = index;
+                        return true;
+                    }
+                    return false;
+                });
+            
+                this$1.circlesLayer.removeLayer(data.obj);
+                this$1.circlesData.splice(data.index, 1);
+            });
+        },
     },
     computed: {
         compMarkers: function compMarkers() {
@@ -146,16 +174,15 @@ var script = {
             },
             deep: true, 
         },
-        circles: {
+        compCircles: {
             handler: function handler(newCircle, oldCircle) {
-                // if(!oldMarker) oldMarker = [];
-                // if(!newMarker) newMarker = [];
-                // const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
-                // const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));
-                // console.log(toRemove);
+                if(!oldCircle) { oldCircle = []; }
+                if(!newCircle) { newCircle = []; }
+                var toAdd = newCircle.filter(function (elem) { return !oldCircle.includes(elem); });
+                var toRemove = oldCircle.filter(function (elem) { return !newCircle.includes(elem); });
 
-                // this.addMarkers(toAdd);
-                // this.removeMarkers(toRemove);
+                this.addCircles(toAdd);
+                this.removeCircles(toRemove);
             },
             deep: true,
         }
@@ -306,11 +333,11 @@ __vue_render__._withStripped = true;
   /* style */
   var __vue_inject_styles__ = function (inject) {
     if (!inject) { return }
-    inject("data-v-4d5370d6_0", { source: "\n#leaflet[data-v-4d5370d6] {\n    height: 500px;\n    z-index: 0;\n}\n", map: {"version":3,"sources":["/home/antoine/npm-packages/easy-vue-leaflet/src/leaflet.vue"],"names":[],"mappings":";AAkKA;IACA,aAAA;IACA,UAAA;AACA","file":"leaflet.vue","sourcesContent":["<template>\n    <div id=\"leaflet\"></div>\n</template>\n\n<script>\nimport L from 'leaflet';\nexport default {\n    name: 'leaflet',\n    props: ['options', 'markers', 'circles'],\n    data() {\n        return {\n            map: null,\n            markersLayer: null,\n            markersData: [],\n            circlesLayer: null,\n        };\n    },\n    mounted() {\n        // init map \n        this.map = L.map('leaflet').setView([this.options.view.lat, this.options.view.lng], this.options.view.zoom);\n         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {\n            attribution:\n                \"&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors\",\n        }).addTo(this.map);\n        this.map.on('zoomend', this.onViewChange);\n        this.map.on('dragend', this.onViewChange);\n        this.map.on('click', this.onMapClick);\n\n        //init circles\n        this.circlesLayer = L.layerGroup().addTo(this.map);\n        this.setCircles();\n\n        // init markers\n        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';\n        this.markersLayer = L.layerGroup().addTo(this.map);\n        this.addMarkers(this.compMarkers);\n\n        // emit ready\n        this.$emit('ready');\n        this.onViewChange();\n    },\n    methods: {\n        onViewChange() {\n            const NW = `${this.map.getBounds().getNorthWest().lat},${this.map.getBounds().getNorthWest().lng}`;\n            const SE = `${this.map.getBounds().getSouthEast().lat},${this.map.getBounds().getSouthEast().lng}`;\n            const res = {\n                view: {\n                    NW,\n                    SE,\n                    zoom: this.map.getZoom(),\n                }\n            };\n            this.$emit('viewchanged', res);\n        },\n        onMapClick(event) {\n            const click = {\n                position : {\n                    lat: event.latlng.lat, \n                    lng: event.latlng.lng,\n                }\n            }\n            this.$emit('mapclick', click);\n        },\n        addMarkers(markers) {\n            if(!markers || !markers.length || markers.length <= 0) return;\n            markers.forEach((marker) => {\n                const newMarker = L.marker([marker.position.lat, marker.position.lng]);\n\n                // save trace in markerData\n                this.markersData.push({data: marker, obj: newMarker});\n\n                //click event\n                newMarker.on('click', () => {\n                    this.$emit('markerclick', {marker});\n                });\n\n                // mouse enter event\n                newMarker.on('mouseover', () => {\n                    this.$emit('markerin', {marker});\n                });\n\n                //mouse leave event\n                newMarker.on('mouseout', () => {\n                    this.$emit('markerout', {marker});\n                });\n\n                this.markersLayer.addLayer(newMarker);\n            });\n        },\n        removeMarkers(markers) {\n            if(!markers || !markers.length || markers.length <= 0) return;\n            markers.forEach((marker) => {\n                const {obj} = this.markersData.find(elem => elem.data === marker);\n                console.log(obj);\n                this.markersLayer.removeLayer(obj);\n            });\n        },\n        setCircles() {\n            this.circlesLayer.clearLayers();\n            if(!this.circles || !this.circles.length || this.circles.length <= 0) return;\n            this.circles.forEach((circle) => {\n                const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});\n                //click event\n                newCircle.on('click', () => {\n                    this.$emit('circleclick', {circle});\n                });\n\n                // mouse enter event\n                newCircle.on('mouseover', () => {\n                    this.$emit('circlein', {circle});\n                });\n\n                //mouse leave event\n                newCircle.on('mouseout', () => {\n                    this.$emit('circleout', {circle});\n                });\n                \n                this.circlesLayer.addLayer(newCircle);\n            });\n        }\n    },\n    computed: {\n        compMarkers() {\n            if(!this.markers || !this.markers.length) return [];\n            return this.markers.slice(0);\n        },\n        compCircles() {\n            if(!this.circles || !this.circles.length) return [];\n            return this.circles.slice(0);\n        }\n    },\n    watch: {\n        compMarkers: {\n            handler(newMarker, oldMarker) {\n                if(!oldMarker) oldMarker = [];\n                if(!newMarker) newMarker = [];\n                const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));\n                const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));\n\n                this.addMarkers(toAdd);\n                this.removeMarkers(toRemove);\n            },\n            deep: true, \n        },\n        circles: {\n            handler(newCircle, oldCircle) {\n                // if(!oldMarker) oldMarker = [];\n                // if(!newMarker) newMarker = [];\n                // const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));\n                // const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));\n                // console.log(toRemove);\n\n                // this.addMarkers(toAdd);\n                // this.removeMarkers(toRemove);\n            },\n            deep: true,\n        }\n    }\n}\n</script>\n\n<style scoped>\n#leaflet {\n    height: 500px;\n    z-index: 0;\n}\n</style>"]}, media: undefined });
+    inject("data-v-bfff0cc2_0", { source: "\n#leaflet[data-v-bfff0cc2] {\n    height: 500px;\n    z-index: 0;\n}\n", map: {"version":3,"sources":["/home/antoine/npm-packages/easy-vue-leaflet/src/leaflet.vue"],"names":[],"mappings":";AA4LA;IACA,aAAA;IACA,UAAA;AACA","file":"leaflet.vue","sourcesContent":["<template>\n    <div id=\"leaflet\"></div>\n</template>\n\n<script>\nimport L from 'leaflet';\nexport default {\n    name: 'leaflet',\n    props: ['options', 'markers', 'circles'],\n    data() {\n        return {\n            map: null,\n            markersLayer: null,\n            markersData: [],\n            circlesLayer: null,\n            circlesData: [],\n        };\n    },\n    mounted() {\n        // init map \n        this.map = L.map('leaflet').setView([this.options.view.lat, this.options.view.lng], this.options.view.zoom);\n         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {\n            attribution:\n                \"&copy; <a href='http://osm.org/copyright'>OpenStreetMap</a> contributors\",\n        }).addTo(this.map);\n        this.map.on('zoomend', this.onViewChange);\n        this.map.on('dragend', this.onViewChange);\n        this.map.on('click', this.onMapClick);\n\n        //init circles\n        this.circlesLayer = L.layerGroup().addTo(this.map);\n        this.addCircles(this.compCircles);\n        \n\n        // init markers\n        L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';\n        this.markersLayer = L.layerGroup().addTo(this.map);\n        this.addMarkers(this.compMarkers);\n\n        // emit ready\n        this.$emit('ready');\n        this.onViewChange();\n    },\n    methods: {\n        onViewChange() {\n            const NW = `${this.map.getBounds().getNorthWest().lat},${this.map.getBounds().getNorthWest().lng}`;\n            const SE = `${this.map.getBounds().getSouthEast().lat},${this.map.getBounds().getSouthEast().lng}`;\n            const res = {\n                view: {\n                    NW,\n                    SE,\n                    zoom: this.map.getZoom(),\n                }\n            };\n            this.$emit('viewchanged', res);\n        },\n        onMapClick(event) {\n            const click = {\n                position : {\n                    lat: event.latlng.lat, \n                    lng: event.latlng.lng,\n                }\n            }\n            this.$emit('mapclick', click);\n        },\n        addMarkers(markers) {\n            if(!markers || !markers.length || markers.length <= 0) return;\n            markers.forEach((marker) => {\n                const newMarker = L.marker([marker.position.lat, marker.position.lng]);\n\n                // save trace in markerData\n                this.markersData.push({data: marker, obj: newMarker});\n\n                //click event\n                newMarker.on('click', () => {\n                    this.$emit('markerclick', {marker});\n                });\n\n                // mouse enter event\n                newMarker.on('mouseover', () => {\n                    this.$emit('markerin', {marker});\n                });\n\n                //mouse leave event\n                newMarker.on('mouseout', () => {\n                    this.$emit('markerout', {marker});\n                });\n\n                this.markersLayer.addLayer(newMarker);\n            });\n        },\n        removeMarkers(markers) {\n            if(!markers || !markers.length || markers.length <= 0) return;\n            markers.forEach((marker) => {\n                const data = this.markersData.find((elem, index) => {\n                    if(elem.data === marker){\n                        elem.index = index;\n                        return true;\n                    }\n                    return false;\n                });\n            \n                this.markersLayer.removeLayer(data.obj);\n                this.markersData.splice(data.index, 1);\n            });\n        },\n        addCircles(circles) {\n            if(!circles || !circles.length || circles.length <= 0) return;\n            circles.forEach((circle) => {\n                const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});\n                \n                // save trace in circleData\n                this.circlesData.push({data: circle, obj: newCircle});\n                \n                //click event\n                newCircle.on('click', () => {\n                    this.$emit('circleclick', {circle});\n                });\n\n                // mouse enter event\n                newCircle.on('mouseover', () => {\n                    this.$emit('circlein', {circle});\n                });\n\n                //mouse leave event\n                newCircle.on('mouseout', () => {\n                    this.$emit('circleout', {circle});\n                });\n                \n                this.circlesLayer.addLayer(newCircle);\n            });\n        },\n        removeCircles(circles) {\n            if(!circles || !circles.length || circles.length <= 0) return;\n            circles.forEach((circle) => {\n                const data = this.circlesData.find((elem, index) => {\n                    if(elem.data === circle){\n                        elem.index = index;\n                        return true;\n                    }\n                    return false;\n                });\n            \n                this.circlesLayer.removeLayer(data.obj);\n                this.circlesData.splice(data.index, 1);\n            });\n        },\n    },\n    computed: {\n        compMarkers() {\n            if(!this.markers || !this.markers.length) return [];\n            return this.markers.slice(0);\n        },\n        compCircles() {\n            if(!this.circles || !this.circles.length) return [];\n            return this.circles.slice(0);\n        }\n    },\n    watch: {\n        compMarkers: {\n            handler(newMarker, oldMarker) {\n                if(!oldMarker) oldMarker = [];\n                if(!newMarker) newMarker = [];\n                const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));\n                const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));\n\n                this.addMarkers(toAdd);\n                this.removeMarkers(toRemove);\n            },\n            deep: true, \n        },\n        compCircles: {\n            handler(newCircle, oldCircle) {\n                if(!oldCircle) oldCircle = [];\n                if(!newCircle) newCircle = [];\n                const toAdd = newCircle.filter(elem => !oldCircle.includes(elem));\n                const toRemove = oldCircle.filter(elem => !newCircle.includes(elem));\n\n                this.addCircles(toAdd);\n                this.removeCircles(toRemove);\n            },\n            deep: true,\n        }\n    }\n}\n</script>\n\n<style scoped>\n#leaflet {\n    height: 500px;\n    z-index: 0;\n}\n</style>"]}, media: undefined });
 
   };
   /* scoped */
-  var __vue_scope_id__ = "data-v-4d5370d6";
+  var __vue_scope_id__ = "data-v-bfff0cc2";
   /* module identifier */
   var __vue_module_identifier__ = undefined;
   /* functional template */

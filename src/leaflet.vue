@@ -11,6 +11,7 @@ export default {
         return {
             map: null,
             markersLayer: null,
+            markersData: [],
             circlesLayer: null,
         };
     },
@@ -62,9 +63,14 @@ export default {
         },
         setMarkers() {
             this.markersLayer.clearLayers();
+            this.markersData = [];
             if(!this.markers || !this.markers.length || this.markers.length <= 0) return;
             this.markers.forEach((marker) => {
                 const newMarker = L.marker([marker.position.lat, marker.position.lng]);
+
+                // save trace in markerData
+                this.markersData.push({data: marker, obj: newMarker});
+
                 //click event
                 newMarker.on('click', () => {
                     this.$emit('markerclick', {marker});
@@ -109,7 +115,9 @@ export default {
     },
     watch: {
         markers: {
-            handler() {
+            handler(newMarker, oldMarker) {
+                const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
+                const toRemove = oldMarker.filter(elem => !newMarker.includes(elem))
                 this.setMarkers();
             },
             deep: true, 

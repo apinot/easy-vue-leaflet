@@ -33,6 +33,7 @@ export default {
         // init markers
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
         this.markersLayer = L.layerGroup().addTo(this.map);
+        this.addMarkers(this.compMarkers);
 
         // emit ready
         this.$emit('ready');
@@ -123,25 +124,34 @@ export default {
             if(!this.markers || !this.markers.length) return [];
             return this.markers.slice(0);
         },
+        compCircles() {
+            if(!this.circles || !this.circles.length) return [];
+            return this.circles.slice(0);
+        }
     },
     watch: {
         compMarkers: {
-            handler: function(newMarker, oldMarker) {
+            handler(newMarker, oldMarker) {
                 if(!oldMarker) oldMarker = [];
                 if(!newMarker) newMarker = [];
                 const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
                 const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));
-                console.log(toRemove);
 
                 this.addMarkers(toAdd);
                 this.removeMarkers(toRemove);
             },
             deep: true, 
-            immediate: true,
         },
         circles: {
-            handler() {
-                this.setCircles();
+            handler(newCircle, oldCircle) {
+                // if(!oldMarker) oldMarker = [];
+                // if(!newMarker) newMarker = [];
+                // const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
+                // const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));
+                // console.log(toRemove);
+
+                // this.addMarkers(toAdd);
+                // this.removeMarkers(toRemove);
             },
             deep: true,
         }

@@ -8,7 +8,7 @@
         "./sfc": "src/leaflet.vue"
     },
     "scripts": {
-        "test": "serve test/",
+        "test": "npm run build && ln dist/leaflet.min.js test/leaflet.min.js -f && serve test/",
         "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
         "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/leaflet.umd.js",
         "build:es": "rollup --config build/rollup.config.js --format es --file dist/leaflet.esm.js",

@@ -33,7 +33,6 @@ export default {
         // init markers
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
         this.markersLayer = L.layerGroup().addTo(this.map);
-        this.setMarkers();
 
         // emit ready
         this.$emit('ready');
@@ -61,11 +60,9 @@ export default {
             }
             this.$emit('mapclick', click);
         },
-        setMarkers() {
-            this.markersLayer.clearLayers();
-            this.markersData = [];
-            if(!this.markers || !this.markers.length || this.markers.length <= 0) return;
-            this.markers.forEach((marker) => {
+        addMarkers(markers) {
+            if(!markers || !markers.length || markers.length <= 0) return;
+            markers.forEach((marker) => {
                 const newMarker = L.marker([marker.position.lat, marker.position.lng]);
 
                 // save trace in markerData
@@ -87,6 +84,14 @@ export default {
                 });
 
                 this.markersLayer.addLayer(newMarker);
+            });
+        },
+        removeMarkers(markers) {
+            if(!markers || !markers.length || markers.length <= 0) return;
+            markers.forEach((marker) => {
+                const {obj} = this.markersData.find(elem => elem.data === marker);
+                console.log(obj);
+                this.markersLayer.removeLayer(obj);
             });
         },
         setCircles() {
@@ -113,14 +118,26 @@ export default {
             });
         }
     },
+    computed: {
+        compMarkers() {
+            if(!this.markers || !this.markers.length) return [];
+            return this.markers.slice(0);
+        },
+    },
     watch: {
-        markers: {
-            handler(newMarker, oldMarker) {
+        compMarkers: {
+            handler: function(newMarker, oldMarker) {
+                if(!oldMarker) oldMarker = [];
+                if(!newMarker) newMarker = [];
                 const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
-                const toRemove = oldMarker.filter(elem => !newMarker.includes(elem))
-                this.setMarkers();
+                const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));
+                console.log(toRemove);
+
+                this.addMarkers(toAdd);
+                this.removeMarkers(toRemove);
             },
             deep: true, 
+            immediate: true,
         },
         circles: {
             handler() {

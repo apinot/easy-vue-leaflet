@@ -79,9 +79,13 @@ var app = new Vue({
         this.markers.splice(index, 1);
     },
     onMarkerIn(event) {
+        event.marker.position.lat += 0.2;
+        event.marker.updated = true;
         console.log('marker hover');
     },
     onMarkerOut(event) {
+        event.marker.position.lat -= 0.2;
+        event.marker.updated = true;
         console.log('marker normal');
     },
     onCircleIn(event) {

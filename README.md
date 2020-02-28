@@ -148,7 +148,18 @@ data() {
     };
 }
 ```
-The markers display is automatically refresh when markers array change.
+The markers display is automatically refresh when array of markers change.  
+But if you modify data in marker which was already added to the array, you should specify the update to 
+easy-vue-leaflet by adding a property `updated: true` to the modified marker.
+```
+// Method call when markerin event (@markerin)
+onMarkerIn(event) {
+    const {marker} = event; // get the hovered marker
+    marker.position.lat += 0.5; // add 0.5° to the latitude
+    marker.position.lng -= 0.5; // remove 0.5° to the longitude
+    marker.updated = true; // apply change 
+}
+```
 
 #### Circles : 
 `circles` is an array of circle object which contains :

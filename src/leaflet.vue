@@ -70,6 +70,9 @@ export default {
 
                 // save trace in markerData
                 this.markersData.push({data: marker, obj: newMarker});
+                if(marker.updated) {
+                    delete marker.updated;
+                }
 
                 //click event
                 newMarker.on('click', () => {
@@ -87,6 +90,20 @@ export default {
                 });
 
                 this.markersLayer.addLayer(newMarker);
+            });
+        },
+        updateMarkers(markers) {
+            if(!markers || !markers.length || markers.length <= 0) return;
+            markers.forEach((marker) => {
+                const data = this.markersData.find((elem) => {
+                    if(elem.data === marker){
+                        return true;
+                    }
+                    return false;
+                });
+            
+                const layer = data.obj;
+                layer.setLatLng(L.latLng(marker.position.lat, marker.position.lng));
             });
         },
         removeMarkers(markers) {
@@ -180,6 +197,9 @@ export default {
                 if(!newMarker) newMarker = [];
                 const toAdd = newMarker.filter(elem => !oldMarker.includes(elem));
                 const toRemove = oldMarker.filter(elem => !newMarker.includes(elem));
+
+                const toUpdate = newMarker.filter(elem => elem.updated);
+                this.updateMarkers(toUpdate);
 
                 this.addMarkers(toAdd);
                 this.removeMarkers(toRemove);

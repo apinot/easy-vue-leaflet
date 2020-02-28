@@ -408,6 +408,47 @@ If you put out your mouse of the first marker, you will have the object :
     },
 }
 ```
+#### circleclick : 
+`circleclick` event is fire when the user click on a circle.
+This event return the inital object with a marker field which contains the original object used to create the marker.  
+For example, 
+```
+data() {
+    return  {
+        circles : [
+            {
+                id: 1
+                position : {
+                    lat : 45, // the latitude of the marker
+                    lng : 5 // the longitude of the marker
+                },
+                radius: 10000,
+            },
+            {
+                id: 2
+                position : {
+                    lat : 44, // the latitude of the marker
+                    lng : 6 // the longitude of the marker
+                },
+                radius: 10000,
+            },
+        ]
+    };
+}
+```
+If you click on the first circle, you will have the object : 
+```
+{
+    circle : {
+        id: 1
+        position : {
+            lat : 45,
+            lng : 5
+        },
+        radius: 10000,
+    },
+}
+```
 #### circlein : 
 `circlein` event is fire when the mouse enter on a circle.
 This event return the inital object with a circle field which contains the original object used to create the circle.  

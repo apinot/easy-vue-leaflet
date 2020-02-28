@@ -71,6 +71,10 @@ var app = new Vue({
             position: {
                 lat: event.position.lat,
                 lng: event.position.lng,
+            },
+            popup: {
+                content: '<b>HI !</b> This is a popup.',
+                show: false,
             }
         });
     },
@@ -79,13 +83,14 @@ var app = new Vue({
         this.markers.splice(index, 1);
     },
     onMarkerIn(event) {
-        event.marker.position.lat += 0.2;
+        event.marker.popup.show = true;
         event.marker.updated = true;
         console.log('marker hover');
     },
     onMarkerOut(event) {
-        event.marker.position.lat -= 0.2;
+        event.marker.popup.show = false;
         event.marker.updated = true;
+
         console.log('marker normal');
     },
     onCircleIn(event) {

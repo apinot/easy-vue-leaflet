@@ -90,6 +90,19 @@ export default {
                 });
 
                 this.markersLayer.addLayer(newMarker);
+
+                //add Popup
+                if(marker.popup) {
+                    newMarker.bindPopup(
+                        marker.popup.content,
+                        {closeOnClick: false, closeButton: false, autoClose: false}
+                    );
+
+                    if(marker.popup.show !== false) {
+                        newMarker.openPopup();
+                    }
+                }
+
             });
         },
         updateMarkers(markers) {
@@ -103,7 +116,21 @@ export default {
                 });
             
                 const layer = data.obj;
+                //postion
                 layer.setLatLng(L.latLng(marker.position.lat, marker.position.lng));
+                
+                //popup
+                if(marker.popup) {
+                    layer.setPopupContent(
+                        marker.popup.content
+                    );
+
+                    if(marker.popup.show !== false) {
+                        layer.openPopup();
+                    }else {
+                        layer.closePopup();
+                    }
+                }
             });
         },
         removeMarkers(markers) {

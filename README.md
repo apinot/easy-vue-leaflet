@@ -10,6 +10,7 @@ A vue.js component for an easier usage of Leaflet
          * [Options](#Options)
          * [Markers](#Markers)
          * [Circles](#Circles)
+         * [Popup](#Popup)
      - [Events](#Events)
          * [Ready](#ready)
          * [View Changed](#viewchanged)
@@ -197,6 +198,62 @@ onMarkerIn(event) {
     circle.updated = true; // apply change 
 }
 ```
+
+#### Popup
+You can bind popup to markers and circles by adding to them a property `popup`.  
+This property take some parameters : 
+ - content : the content of the popup
+ - show : if the popup is open or not (optional : true by default)
+
+```
+...
+data() {
+    return  {
+        ...
+        markers : [
+            {
+                ...,
+                position : {
+                    lat : ..., // the latitude of the marker
+                    lng : ... // the longitude of the marker
+                },
+                popup: {
+                    content: 'blou', // an open popup that have with the 'blou' text
+                }
+                ...
+            },
+            ...
+        ],
+        circles : [
+            {
+                ...,
+                position : {
+                    lat : ..., // the latitude of the marker
+                    lng : ... // the longitude of the marker
+                },
+                radius: ..., // the radius of the circle (in meters)
+                popup: {
+                    content: 'blou', // a popup that have with the 'blou' text
+                    show: false, // set the popup closed
+                }
+                ...
+            },
+            ...
+        ]
+        ...
+    };
+}
+```
+**If you modify the state or the content of the popup** don't forget to set the proporty `updated` to `true` of the parent object (namely **the marker or the circle**)  
+  
+```
+onMarkerIn(event) {
+    const {marker} = event; // get the hovered marker
+    marker.position.popup.show = true; //open the popup
+    marker.updated = true; // apply change 
+}
+```
+
 ### Events
 
 #### ready : 

@@ -55,13 +55,21 @@ var app = new Vue({
                         lng: 4,
                     },
                     radius: 100000, 
+                    popup: {
+                        content: 'Circle one',
+                        show: false,
+                    },
                 },
                 {
                     position: {
                         lat: 47,
                         lng: 4,
                     },
-                    radius: 200000, 
+                    radius: 200000,
+                    popup: {
+                        content: 'Circle two',
+                        show: false,
+                    },
                 }
             ];
         }, 3000);
@@ -95,11 +103,13 @@ var app = new Vue({
     },
     onCircleIn(event) {
         event.circle.radius += 20000;
+        event.circle.popup.show = true;
         event.circle.updated = true;
         console.log('circle hover');
     },
     onCircleOut(event){
         event.circle.radius -= 20000;
+        event.circle.popup.show = false;
         event.circle.updated = true;
         console.log('circle normal');
     }

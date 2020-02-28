@@ -130,6 +130,8 @@ export default {
                     }else {
                         layer.closePopup();
                     }
+                }else{
+                    layer.unbindPopup();
                 }
             });
         },
@@ -175,6 +177,18 @@ export default {
                 });
                 
                 this.circlesLayer.addLayer(newCircle);
+
+                //add Popup
+                if(circle.popup) {
+                    newCircle.bindPopup(
+                        circle.popup.content,
+                        {closeOnClick: false, closeButton: false, autoClose: false}
+                    );
+
+                    if(circle.popup.show !== false) {
+                        newCircle.openPopup();
+                    }
+                }
             });
         },
         updateCircles(circles) {
@@ -189,6 +203,21 @@ export default {
                 const layer = data.obj;
                 layer.setRadius(circle.radius);
                 layer.setLatLng(L.latLng(circle.position.lat, circle.position.lng));
+
+                //popup
+                if(circle.popup) {
+                    layer.setPopupContent(
+                        circle.popup.content
+                    );
+
+                    if(circle.popup.show !== false) {
+                        layer.openPopup();
+                    }else {
+                        layer.closePopup();
+                    }
+                }else{
+                    layer.unbindPopup();
+                }
             });
         },
         removeCircles(circles) {

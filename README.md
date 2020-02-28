@@ -232,7 +232,7 @@ data() {
                     lng : ... // the longitude of the marker
                 },
                 radius: ..., // the radius of the circle (in meters)
-                popup: {
+                popup: { 
                     content: 'blou', // a popup that have with the 'blou' text
                     show: false, // set the popup closed
                 }

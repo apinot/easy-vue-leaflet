@@ -199,6 +199,34 @@ onMarkerIn(event) {
 }
 ```
 
+Circle have an **optional** property `color` to change the color of the circle.  
+It can take a name of color : `red`, `blue`, `black`, ...  
+or a hexa code : `#fff`, `#3388ff`, ...  
+or you can set it to `null` to have the default color.   
+  
+You can set it to `*` or other invalid color to make a circle without border.
+
+**By default color property is set to `#3388ff`**
+```
+...
+data() {
+    return  {
+        ...
+        circles : [
+            {
+                ...,
+                position : { ... },
+                radius: ... // the radius of the circle (in meters)
+                color: 'red', // [optional] the color of the circle (#3388ff by default)
+                ...
+            },
+            ...
+        ]
+        ...
+    };
+}
+```
+
 #### Popup
 You can bind popup to markers and circles by adding to them a property `popup`.  
 This property take some parameters : 

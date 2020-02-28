@@ -104,12 +104,14 @@ var app = new Vue({
     onCircleIn(event) {
         event.circle.radius += 20000;
         event.circle.popup.show = true;
+        event.circle.color = 'red';
         event.circle.updated = true;
         console.log('circle hover');
     },
     onCircleOut(event){
         event.circle.radius -= 20000;
         event.circle.popup.show = false;
+        event.circle.color = null;
         event.circle.updated = true;
         console.log('circle normal');
     }

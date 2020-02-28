@@ -153,7 +153,10 @@ export default {
         addCircles(circles) {
             if(!circles || !circles.length || circles.length <= 0) return;
             circles.forEach((circle) => {
-                const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius});
+                //style of circle
+                const color = circle.color || '#3388ff';
+
+                const newCircle = L.circle([circle.position.lat, circle.position.lng], {radius: circle.radius, color});
                 
                 // save trace in circleData
                 this.circlesData.push({data: circle, obj: newCircle});
@@ -203,6 +206,10 @@ export default {
                 const layer = data.obj;
                 layer.setRadius(circle.radius);
                 layer.setLatLng(L.latLng(circle.position.lat, circle.position.lng));
+
+                //update style
+                const color = circle.color || '#3388ff';
+                layer.setStyle({color});
 
                 //popup
                 if(circle.popup) {

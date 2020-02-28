@@ -86,11 +86,12 @@ var app = new Vue({
     },
     onCircleIn(event) {
         event.circle.radius += 20000;
+        event.circle.updated = true;
         console.log('circle hover');
     },
     onCircleOut(event){
-        const index = this.circles.indexOf(event.circle);
-        this.circles.splice(index, 1);
+        event.circle.radius -= 20000;
+        event.circle.updated = true;
         console.log('circle normal');
     }
   }

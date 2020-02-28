@@ -175,8 +175,17 @@ data() {
     };
 }
 ```
-The circles display is automatically refresh when circles array change.
-
+The circles display is automatically refresh when array of circles change.  
+But if you modify data in circle which was already added to the array, you should specify the update to 
+easy-vue-leaflet by adding a property `updated: true` to the modified circle.
+```
+// Method call when circlein event (@circlein)
+onMarkerIn(event) {
+    const {circle} = event; // get the hovered circle
+    circle.radius += 2000; // add 2 km to his radius
+    circle.updated = true; // apply change 
+}
+```
 ### Events
 
 #### ready : 

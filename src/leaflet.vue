@@ -111,6 +111,9 @@ export default {
                 
                 // save trace in circleData
                 this.circlesData.push({data: circle, obj: newCircle});
+                if(circle.updated) {
+                    delete circle.updated;
+                }
                 
                 //click event
                 newCircle.on('click', () => {
@@ -128,6 +131,20 @@ export default {
                 });
                 
                 this.circlesLayer.addLayer(newCircle);
+            });
+        },
+        updateCircles(circles) {
+            if(!circles || !circles.length || circles.length <= 0) return;
+            circles.forEach((circle) => {
+                const data = this.circlesData.find((elem) => {
+                    if(elem.data === circle){
+                        return true;
+                    }
+                    return false;
+                });
+                const layer = data.obj;
+                layer.setRadius(circle.radius);
+                layer.setLatLng(L.latLng(circle.position.lat, circle.position.lng));
             });
         },
         removeCircles(circles) {
@@ -176,8 +193,11 @@ export default {
                 const toAdd = newCircle.filter(elem => !oldCircle.includes(elem));
                 const toRemove = oldCircle.filter(elem => !newCircle.includes(elem));
 
+                const toUpdate = newCircle.filter(elem => elem.updated);
+
                 this.addCircles(toAdd);
                 this.removeCircles(toRemove);
+                this.updateCircles(toUpdate);
             },
             deep: true,
         }

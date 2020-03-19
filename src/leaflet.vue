@@ -45,11 +45,16 @@ export default {
         onViewChange() {
             const NW = `${this.map.getBounds().getNorthWest().lat},${this.map.getBounds().getNorthWest().lng}`;
             const SE = `${this.map.getBounds().getSouthEast().lat},${this.map.getBounds().getSouthEast().lng}`;
+            const  {lat, lng} = this.map.getCenter();
             const res = {
                 view: {
                     NW,
                     SE,
                     zoom: this.map.getZoom(),
+                    center: {
+                        lat,
+                        lng,
+                    },
                 }
             };
             this.$emit('viewchanged', res);

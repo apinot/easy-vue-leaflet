@@ -6,7 +6,7 @@
 import L from 'leaflet';
 export default {
     name: 'leaflet',
-    props: ['options', 'markers', 'circles'],
+    props: ['options', 'markers', 'circles', 'disabled'],
     data() {
         return {
             map: null,
@@ -36,6 +36,8 @@ export default {
         L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.6.0/dist/images/';
         this.markersLayer = L.layerGroup().addTo(this.map);
         this.addMarkers(this.compMarkers);
+
+        this.changeDisabled();
 
         // emit ready
         this.$emit('ready');
@@ -247,6 +249,25 @@ export default {
                 this.circlesData.splice(data.index, 1);
             });
         },
+        changeDisabled() {
+            if(!!this.disabled) {
+                this.map.dragging.disable();
+                this.map.touchZoom.disable();
+                this.map.doubleClickZoom.disable();
+                this.map.scrollWheelZoom.disable();
+                this.map.boxZoom.disable();
+                this.map.keyboard.disable();
+                if (this.map.tap) this.map.tap.disable();
+            }else{
+                this.map.dragging.enable();
+                this.map.touchZoom.enable();
+                this.map.doubleClickZoom.enable();
+                this.map.scrollWheelZoom.enable();
+                this.map.boxZoom.enable();
+                this.map.keyboard.enable();
+                if (this.map.tap) this.map.tap.enable();
+            }
+        }
     },
     computed: {
         compMarkers() {
@@ -259,6 +280,11 @@ export default {
         }
     },
     watch: {
+        disabled: {
+            handler() {
+                this.changeDisabled();
+            },
+        },
         compMarkers: {
             handler(newMarker, oldMarker) {
                 if(!oldMarker) oldMarker = [];

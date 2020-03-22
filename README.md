@@ -8,6 +8,7 @@ A vue.js component for an easier usage of Leaflet
  - [Usage](#Usage)
      - [Props](#Props)
          * [Options](#Options)
+         * [Disabled] (#Disabled)
          * [Markers](#Markers)
          * [Circles](#Circles)
          * [Popup](#Popup)
@@ -123,6 +124,13 @@ data() {
     };
 }
 ...
+```
+#### Disabled : 
+`disabled` is a boolean props which is optional (`disabled = false` by default):
+
+When disabled is true, drag and scroll are disabled. So, users cannot change the current view.
+```
+<leaflet :disabled="true"></leaflet>
 ```
 
 #### Markers : 

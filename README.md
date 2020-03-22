@@ -296,7 +296,11 @@ Result :
     view : {
         NW: "54.188155,17.841797", // the north west postion in lat,lng format
         SE: "39.266284,13.579102", // the south east position in lat,lng format
-        zoom: 5 // the new zoom level
+        zoom: 5, // the new zoom level
+        center: { // the position of the center of the view
+            lat: 46.727549, // the latitude of the center
+            lng: 15.710450 // the longitude of the center 
+        }
     }
 }
 ```

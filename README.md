@@ -1,8 +1,6 @@
 # easy-vue-leaflet
 A vue.js component for an easier usage of Leaflet
 
-**Contact me if you need more fonctionnalities by posting an issue on github**
-
 ## Table of content
  - [Installation](#Install)
  - [Usage](#Usage)
@@ -37,7 +35,7 @@ Then, go in your vue template and import the component in your Vue.js project an
 ```
 <template>
     <div>
-        <leaflet :options="options></leaflet>
+        <leaflet :options="options"></leaflet>
     </div>
 </template>
 
